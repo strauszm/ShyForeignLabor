@@ -38,36 +38,7 @@ HoC2019<-merge(HoC2019, HoC2013a,by="NAME",all=TRUE)
 #became less supportive of foreign labor, neg numbers mean the reverse)
 HoC2019$forlab.ch1913<-HoC2019$Q4_8-HoC2019$FoRLab2013
 
-#add a vector for 2019 candidates that also ran in 2016-----------------
-HoC2016$cand1619<-HoC2016$NAME #generate a new vector for candidates in 16&19
-
-#exclude candidates that weren't candidates in 2019
-HoC2016 <- HoC2016 %>%
-  mutate(cand1619 = ifelse(cand1619 %in% HoC2019$NAME, cand1619, ""))
-
-#make a subset of 2016 that only includes those that were also candidates in 2019
-HoC2016a <- HoC2016 %>%
-  filter(cand1619!="")%>%
-  group_by(cand1619) %>% 
-  summarise(Q3_15=mean(Q3_15)
-  )
-
-#rename the columns in the new subset
-HoC2016a<-HoC2016a %>% 
-  rename(
-    NAME=cand1619,
-    FoRLab2016=Q3_15
-  )
-
-#merge the 2016 forlab variable variable into 2019
-HoC2019<-merge(HoC2019, HoC2016a,by="NAME",all=TRUE)
-
-#create a new vector for change between 2019 and 2016 (positive numbers means 
-#became less supportive of foreign labor, neg numbers mean the reverse)
-HoC2019$forlab.ch1916<-HoC2019$Q4_8-HoC2019$FoRLab2016
-
-#add a new variable for change since last election--------------------------
-HoC2019$forlab.change<-HoC2019$forlab.ch1916
+HoC2019$forlab.change<-NA
 
 HoC2019 <- HoC2019 %>%
   mutate(forlab.change = ifelse(forlab.change %in% !is.na(forlab.ch1916), 
